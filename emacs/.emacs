@@ -15,14 +15,14 @@
 ;;on os cocoa enable emacs starts in / (ugh)
 (setq default-directory "~sjunkin/")
 
-;; Package setup
+;;;;;;;;; Package setup and large python specific bigs.
 
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast))
+(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast ido-vertical-mode))
 
 (defun uninstalled-packages (packages)
   (delq nil
