@@ -13,16 +13,16 @@
 		    :family "Inconsolata" :height 145 :weight 'normal)
 
 ;;on os cocoa enable emacs starts in / (ugh)
-(setq default-directory "~junkin/")
+(setq default-directory "~sjunkin/")
 
-;;;;;;;;; Package setup and large python specific bigs.
+;; Package setup
 
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast ido-vertical-mode))
+(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast))
 
 (defun uninstalled-packages (packages)
   (delq nil
