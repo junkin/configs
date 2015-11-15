@@ -13,16 +13,16 @@
 		    :family "Inconsolata" :height 145 :weight 'normal)
 
 ;;on os cocoa enable emacs starts in / (ugh)
-(setq default-directory "~sjunkin/")
+(setq default-directory "~junkin/")
 
-;; Package setup
+;;;;;;;;; Package setup and large python specific bigs.
 
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast))
+(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast ido-vertical-mode))
 
 (defun uninstalled-packages (packages)
   (delq nil
@@ -38,7 +38,7 @@
       (dolist (p need-to-install)
 	(package-install p)))))
 
-;; Global Jedi config vars
+;;;;; Global Jedi config vars
 
 (defvar jedi-config:use-system-python nil
   "Will use system python and active environment for Jedi server.
@@ -207,6 +207,13 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 
     ))
 
+;;;;; end of python specific setup.
+
+;;; ido for veritcal mode
+(require 'ido-vertical-mode)
+(ido-mode 1)
+(ido-vertical-mode 1)
+(setq ido-vertical-define-keys 'C-n-and-C-p-only)
 
 ;;;Forecast bits.
 (require 'forecast)
@@ -331,7 +338,9 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("2e5705ad7ee6cfd6ab5ce81e711c526ac22abed90b852ffaf0b316aa7864b11f" default))))
+ '(custom-safe-themes
+   (quote
+    ("3b819bba57a676edf6e4881bd38c777f96d1aa3b3b5bc21d8266fa5b0d0f1ebf" "2e5705ad7ee6cfd6ab5ce81e711c526ac22abed90b852ffaf0b316aa7864b11f" default))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
