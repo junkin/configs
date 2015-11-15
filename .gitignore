@@ -1,0 +1,12 @@
+# -*- mode: gitignore; -*-
+#macs
+*~
+\#*\#
+.\#*
+#flymake
+*_flymake.*
+secret*
+
+#logs
+*.log
+
