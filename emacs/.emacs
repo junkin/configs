@@ -365,3 +365,47 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 	      flymake-simple-cleanup
 	      flymake-get-real-file-name)
 	    flymake-allowed-file-name-masks))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;; EMAIL ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; example configuration for mu4e
+
+;; make sure mu4e is in your load-path
+(require 'mu4e)
+
+;; Only needed if your maildir is _not_ ~/Maildir
+;; Must be a real dir, not a symlink
+;;(setq mu4e-maildir "/home/user/Maildir")
+
+;; these must start with a "/", and must exist
+;; (i.e.. /home/user/Maildir/sent must exist)
+;; you use e.g. 'mu mkdir' to make the Maildirs if they don't
+;; already exist
+
+;; below are the defaults; if they do not exist yet, mu4e offers to
+;; create them. they can also functions; see their docstrings.
+(setq mu4e-sent-folder   "/Sent")
+(setq mu4e-drafts-folder "/Drafts")
+(setq mu4e-trash-folder  "/Trash")
+(setq mu4e-mu-binary "/usr/local/bin/mu")
+;; smtp mail setting; these are the same that `gnus' uses.
+;; do I need to setup .authinfo.   this appears to be a hardcore tbd?
+;; the ip of the virutal machine runnign davmail will be dynamic, need to do something about that.
+(setq
+   message-send-mail-function   'smtpmail-send-it
+   smtpmail-default-smtp-server "10.10.0.114"
+   smtpmail-smtp-server         "10.10.0.114"
+   smtpmail-local-domain        "juniper.net"
+   smtpmail-smtp-service        1025
+   smtpmail-user-mail-address "sjunkin@juniper.net"
+   smtpmail-auth-credentials .authinfo)
+
+;mu4e cmds.
+(setq mu4e-html2text-command "w3m -T text/html"
+      mu4e-update-interval 120
+      mu4e-headers-auto-update t
+      mu4e-compose-signature-auto-include nil)
+
+(setq mu4e-reply-to-address "sjunkin@juniper.net"
+      user-mail-address "sjunkin@juniper.net"
+      user-full-name "Scot Junkin"
+      )
