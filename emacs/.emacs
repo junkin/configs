@@ -27,7 +27,7 @@
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ))
+(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode))
 
 (defun uninstalled-packages (packages)
   (delq nil
@@ -211,6 +211,11 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
     (add-hook 'python-mode-hook 'jedi-config:setup-keys)
 
     ))
+
+;;; ido for veritcal mode
+(require 'ido-vertical-mode)
+(ido-mode 1)
+(ido-vertical-mode 1)
 
 
 ;;;Forecast bits.
