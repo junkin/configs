@@ -8,6 +8,11 @@
 (setq ring-bell-function 'ignore)
 
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(defun prev-window ()
+   (interactive)
+   (other-window -1))
+
+(define-key global-map (kbd "C-x p") 'prev-window)
 
 (set-face-attribute 'default nil
 		    :family "Inconsolata" :height 145 :weight 'normal)
@@ -15,14 +20,14 @@
 ;;on os cocoa enable emacs starts in / (ugh)
 (setq default-directory "~sjunkin/")
 
-;;;;;;;;; Package setup and large python specific bigs.
+;; Package setup
 
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast ido-vertical-mode))
+(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ))
 
 (defun uninstalled-packages (packages)
   (delq nil
@@ -38,7 +43,7 @@
       (dolist (p need-to-install)
 	(package-install p)))))
 
-;;;;; Global Jedi config vars
+;; Global Jedi config vars
 
 (defvar jedi-config:use-system-python nil
   "Will use system python and active environment for Jedi server.
@@ -207,13 +212,6 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 
     ))
 
-;;;;; end of python specific setup.
-
-;;; ido for veritcal mode
-(require 'ido-vertical-mode)
-(ido-mode 1)
-(ido-vertical-mode 1)
-(setq ido-vertical-define-keys 'C-n-and-C-p-only)
 
 ;;;Forecast bits.
 (require 'forecast)
@@ -223,7 +221,7 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
        forecast-country "USA"
        forecast-units "us")
 
-(load (locate-user-emacs-file "secretdata.el"))
+
 
 
 ;;kernel/c
@@ -259,6 +257,7 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 					;(add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path "~/.emacs.d/site-lisp")
 (add-to-list 'load-path "~/.emacs.d/side-lisp/jde")
+
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/")
 
 ;;added 11/23/2004 sdj
@@ -331,8 +330,8 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 
 (add-hook 'after-init-hook 'my-after-init-hook)
 (defun my-after-init-hook ()
-  (load-theme 'zenburn)
-  )
+  (load-theme 'zenburn))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -340,7 +339,8 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("3b819bba57a676edf6e4881bd38c777f96d1aa3b3b5bc21d8266fa5b0d0f1ebf" "2e5705ad7ee6cfd6ab5ce81e711c526ac22abed90b852ffaf0b316aa7864b11f" default))))
+    ("2e5705ad7ee6cfd6ab5ce81e711c526ac22abed90b852ffaf0b316aa7864b11f" default)))
+ '(send-mail-function (quote sendmail-send-it)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -366,11 +366,19 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 	      flymake-get-real-file-name)
 	    flymake-allowed-file-name-masks))
 
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; EMAIL ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; example configuration for mu4e
 
 ;; make sure mu4e is in your load-path
 (require 'mu4e)
+;;another experimental  bit - org for message composition.
+(require 'org-mu4e)
+
+;;experimental support for default emacs mail program: from appendix A of mu4e manual in sandbox/configs/
+(setq mail-user-agent 'mu4e-user-agent)
 
 ;; Only needed if your maildir is _not_ ~/Maildir
 ;; Must be a real dir, not a symlink
@@ -387,6 +395,9 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 (setq mu4e-drafts-folder "/Drafts")
 (setq mu4e-trash-folder  "/Trash")
 (setq mu4e-mu-binary "/usr/local/bin/mu")
+
+(setq mu4e-get-mail-command "offlineimap -q -a Juniper")
+
 ;; smtp mail setting; these are the same that `gnus' uses.
 ;; do I need to setup .authinfo.   this appears to be a hardcore tbd?
 ;; the ip of the virutal machine runnign davmail will be dynamic, need to do something about that.
@@ -397,11 +408,11 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
    smtpmail-local-domain        "juniper.net"
    smtpmail-smtp-service        1025
    smtpmail-user-mail-address "sjunkin@juniper.net"
-   smtpmail-auth-credentials .authinfo)
+   smtpmail-auth-credentials "~/.authinfo")
 
 ;mu4e cmds.
 (setq mu4e-html2text-command "w3m -T text/html"
-      mu4e-update-interval 120
+      mu4e-update-interval 240
       mu4e-headers-auto-update t
       mu4e-compose-signature-auto-include nil)
 
@@ -409,3 +420,28 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
       user-mail-address "sjunkin@juniper.net"
       user-full-name "Scot Junkin"
       )
+;;;;;;; org
+
+;;;;;;;;;;;; bindings
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-cb" 'org-iswitchb)
+
+;;;;;;;;;;; babel
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)))
+
+(setq org-directory "~/org")
+(setq org-agenda-files '("~/org"))
+
+
+;;;;; org-caldav test.
+(require 'org-caldav)
+(setq org-caldav-url "http://10.10.0.114:1080/users"
+           org-caldav-calendar-id "sjunkin@juniper.net/calendar"
+           org-caldav-uuid-extension ".EML")
+
+(setq org-caldav-inbox "~/org/calendar_jnpr.org")
+
