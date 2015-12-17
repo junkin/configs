@@ -15,7 +15,7 @@
 (define-key global-map (kbd "C-x p") 'prev-window)
 
 (set-face-attribute 'default nil
-		    :family "Inconsolata" :height 145 :weight 'normal)
+		    :family "Inconsolata" :height 245 :weight 'normal)
 
 ;;on os cocoa enable emacs starts in / (ugh)
 (setq default-directory "~sjunkin/")
@@ -27,7 +27,7 @@
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode))
+(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode ess))
 
 (defun uninstalled-packages (packages)
   (delq nil
@@ -408,8 +408,8 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 ;; the ip of the virutal machine runnign davmail will be dynamic, need to do something about that.
 (setq
    message-send-mail-function   'smtpmail-send-it
-   smtpmail-default-smtp-server "10.10.0.114"
-   smtpmail-smtp-server         "10.10.0.114"
+   smtpmail-default-smtp-server "sjunkin-vm"
+   smtpmail-smtp-server         "sjunkin-vm"
    smtpmail-local-domain        "juniper.net"
    smtpmail-smtp-service        1025
    smtpmail-user-mail-address "sjunkin@juniper.net"
@@ -427,6 +427,14 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
       )
 ;;;;;;; org
 
+
+
+;;;;;;;;;;;; odt output
+(setq org-odt-preferred-output-format     "docx")
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCELED(c@)")))
+
 ;;;;;;;;;;;; bindings
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
@@ -436,7 +444,9 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 ;;;;;;;;;;; babel
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((python . t)))
+ '((python . t)
+   (emacs-lisp . nil)
+   (R .t)))
 
 (setq org-directory "~/org")
 (setq org-agenda-files '("~/org"))
@@ -444,9 +454,9 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 
 ;;;;; org-caldav test.
 (require 'org-caldav)
-(setq org-caldav-url "http://10.10.0.114:1080/users"
-           org-caldav-calendar-id "sjunkin@juniper.net/calendar"
-           org-caldav-uuid-extension ".EML")
 
+(setq org-caldav-url "http://sjunkin-vm:1080/sjunkin@juniper.net")
+(setq org-caldav-calendar-id "Calendar")
+(setq org-caldav-uuid-extension ".EML")
 (setq org-caldav-inbox "~/org/calendar_jnpr.org")
 
