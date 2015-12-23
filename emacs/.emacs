@@ -2,6 +2,8 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+
+(display-time-mode 1)
 ;; Hide splash-screen and startup-message
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
@@ -27,7 +29,7 @@
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode ess))
+(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode ess bbdb bbdb-csv-import bbdb-ext bbdb-vcard calfw))
 
 (defun uninstalled-packages (packages)
   (delq nil
@@ -379,8 +381,6 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 
 ;; make sure mu4e is in your load-path
 (require 'mu4e)
-;;another experimental  bit - org for message composition.
-(require 'org-mu4e)
 
 ;;experimental support for default emacs mail program: from appendix A of mu4e manual in sandbox/configs/
 (setq mail-user-agent 'mu4e-user-agent)
@@ -399,7 +399,10 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 (setq mu4e-sent-folder   "/Sent")
 (setq mu4e-drafts-folder "/Drafts")
 (setq mu4e-trash-folder  "/Trash")
+(setq mu4e-refile-folder "/archive")   ;; saved messages
+
 (setq mu4e-mu-binary "/usr/local/bin/mu")
+
 
 (setq mu4e-get-mail-command "offlineimap -q -a Juniper")
 
@@ -416,8 +419,7 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
    smtpmail-auth-credentials "~/.authinfo")
 
 ;mu4e cmds.
-(setq mu4e-html2text-command "w3m -T text/html"
-      mu4e-update-interval 240
+(setq mu4e-update-interval 240
       mu4e-headers-auto-update t
       mu4e-compose-signature-auto-include nil)
 
@@ -425,6 +427,76 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
       user-mail-address "sjunkin@juniper.net"
       user-full-name "Scot Junkin"
       )
+
+;; custom view
+(setq mu4e-view-show-images t)
+(setq mu4e-html2text-command "w3m -dump -T text/html")
+(setq mu4e-view-prefer-html t)
+
+(setq mu4e-use-fancy-chars t)
+(setq mu4e-headers-flagged-mark     '("F" . "⚑")
+      mu4e-headers-new-mark         '("N" . "✱")
+      mu4e-headers-trashed-mark     '("T" . "♻")
+      mu4e-headers-unread-mark      '("u" . "☐")
+      mu4e-headers-duplicate-prefix '("=" . "≡")
+      mu4e-headers-default-prefix   '("|" . "│"))
+
+
+;;
+;; was always alt-q'ing on reading and reply:
+(add-hook 'mu4e-view-mode-hook 'visual-line-mode)
+(add-hook 'mu4e-compose-mode-hook 'fill-paragraph)
+
+;; tip submitted by mu4e user cpbotha
+;; clean up paragraphs on sending
+(add-hook 'mu4e-compose-mode-hook
+          (defun cpb-compose-setup ()
+            "Outgoing mails get format=flowed."
+            (use-hard-newlines t 'guess)))
+
+
+;; gpg
+
+(add-hook 'mu4e-compose-mode-hook 'epa-mail-mode)
+(add-hook 'mu4e-view-mode-hook 'epa-mail-mode)
+
+;; force flyspell incompose 
+(add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
+
+;; 
+(setq mu4e-headers-skip-duplicates t)
+
+
+
+
+;;;;;;;;;; bbdb with mu4e
+; 
+; http://bbdb.sourceforge.net/bbdb.html#SEC13
+;
+;(autoload 'bbdb-insinuate-mu4e "bbdb-mu4e")
+;(bbdb-initialize 'message 'mu4e)  
+;; (require 'bbdb-loaddefs)
+;; (setq bbdb-mail-user-agent (quote message-user-agent))
+;; (setq mu4e-view-mode-hook (quote (bbdb-mua-auto-update visual-line-mode)))
+;; (setq mu4e-compose-complete-addresses nil)
+;; (setq bbdb-mua-pop-up t)
+;; (setq bbdb-mua-pop-up-window-size 5)
+
+;;;;;;;;;; org and mu4e playing nice
+
+;;another experimental  bit - org for message composition.
+(require 'org-mu4e)
+
+;; store links to message if in header view rather than to the search query.
+
+(setq org-mu4e-link-query-in-headers-mode nil)
+
+(setq org-capture-templates
+      '(("t" "todo" entry (file+headline "~/org/todo1.org" "Tasks")
+	 "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")))
+
+
+
 ;;;;;;; org
 
 
@@ -451,6 +523,9 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 (setq org-directory "~/org")
 (setq org-agenda-files '("~/org"))
 
+;;;;;;; calendering
+
+(require 'calfw)
 
 ;;;;; org-caldav test.
 (require 'org-caldav)
