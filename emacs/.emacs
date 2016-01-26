@@ -1,35 +1,60 @@
+;;;;;;;;;
+;; TODO move to separate files
+;; TODO org mode in .dotfile
+
+
+;;;;; fix bad defaults
 ;;dump bars
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
 (display-time-mode 1)
+
 ;; Hide splash-screen and startup-message
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
 
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (defun prev-window ()
    (interactive)
    (other-window -1))
 
+
 (define-key global-map (kbd "C-x p") 'prev-window)
+
 
 (set-face-attribute 'default nil
 		    :family "Inconsolata" :height 245 :weight 'normal)
 
 ;;on os cocoa enable emacs starts in / (ugh)
-(setq default-directory "~sjunkin/")
+(setq default-directory "~/")
 
+
+;;; Generic settings from various places.
+(add-hook 'before-save-hook (lambda () (delete-trailing-whitespace)))
+
+(line-number-mode 1)
+(column-number-mode 1)
+
+;;a nice feature, changes alt-g to goto line (06-12-2002 sdj)
+(global-set-key "\M-g" 'goto-line)
+(global-set-key [backspace] 'backward-delete-char-untabify)
+
+;;;;; tabs
+;; http://www.emacswiki.oeg/emacs/TabCompletion
+;; TODO smart-tab - smart tab versus other tab options
+
+
+;;;;;;;;;;;; bring in some packages.
+;; TODO mu4e doesnt come in cleanly via the below, and requires out of band build for mu
 ;; Package setup
-
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode ess bbdb bbdb-csv-import bbdb-ext bbdb-vcard calfw))
+(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode ess bbdb bbdb-csv-import bbdb-ext bbdb-vcard calfw org-pomodoro markdown-mode))
 
 (defun uninstalled-packages (packages)
   (delq nil
@@ -37,7 +62,6 @@
 
 ;; This delightful bit adapted from:
 ;; http://batsov.com/articles/2012/02/19/package-management-in-emacs-the-good-the-bad-and-the-ugly/
-
 (let ((need-to-install (uninstalled-packages local-packages)))
   (when need-to-install
     (progn
@@ -45,8 +69,35 @@
       (dolist (p need-to-install)
 	(package-install p)))))
 
-;; Global Jedi config vars
+;;; ido for veritcal mode
+(require 'ido-vertical-mode)
+(ido-mode 1)
+(ido-vertical-mode 1)
 
+;;;; markdown mode
+(require 'markdown-mode)
+;;;Forecast bits.
+(require 'forecast)
+(setq forecast-latitude 40.7500
+       forecast-longitude -111.8833
+       forecast-city "Salt Lake City"
+       forecast-country "USA"
+       forecast-units "us")
+
+
+
+;;location of external packages
+					;(add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/.emacs.d/site-lisp")
+(add-to-list 'load-path "~/.emacs.d/side-lisp/jde")
+
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/")
+
+
+;;;;;;;;;;;;;;;;;;;;  Code bits.
+;;;;;;;;;; Python
+
+;; Global Jedi config vars
 (defvar jedi-config:use-system-python nil
   "Will use system python and active environment for Jedi server.
 May be necessary for some GUI environments (e.g., Mac OS X)")
@@ -214,24 +265,8 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 
     ))
 
-;;; ido for veritcal mode
-(require 'ido-vertical-mode)
-(ido-mode 1)
-(ido-vertical-mode 1)
 
-
-;;;Forecast bits.
-(require 'forecast)
-(setq forecast-latitude 40.7500
-       forecast-longitude -111.8833
-       forecast-city "Salt Lake City"
-       forecast-country "USA"
-       forecast-units "us")
-
-
-
-
-;;kernel/c
+;;;;;kernel/c
 (add-hook 'c-mode-common-hook
           (lambda ()
             ;; Add kernel style
@@ -252,39 +287,31 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
                 (setq indent-tabs-mode t)
                 (c-set-style "linux-tabs-only")))))
 
-
-
-(line-number-mode 1)
-(column-number-mode 1)
-
+;;;;; lisp
+;; TODO check for ibcl in path?
 (setq inferior-lisp-program "ibcl")
 
+;;;;; Gnuplot
 
-;;location of external packages
-					;(add-to-list 'load-path "~/.emacs.d/")
-(add-to-list 'load-path "~/.emacs.d/site-lisp")
-(add-to-list 'load-path "~/.emacs.d/side-lisp/jde")
-
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/")
 
 ;;added 11/23/2004 sdj
+;; TODO check for gnuplot in path?
 (autoload 'gnuplot-mode "gnuplot" "gnuplot mode" t)
 (autoload 'gnuplot-make-buffer "gnuplot" "open a buffer in gnuplot-mode" t)
 (setq auto-mode-alist (append '(("\\.gp$" . gnuplot-mode))
 			      auto-mode-alist))
-
+;;;;; Maxima
+;; TODO check for maxima
 (autoload 'maxima-mode "maxima" "Maxima mode" t)
 (autoload 'maxima "maxima" "Maxima interaction" t)
 (setq auto-mode-alist (cons '("\\.max" . maxima-mode) auto-mode-alist))
 
+
+;;
 (setq search-highlight (eq window-system 'x))
 
 
-
-;;a nice feature, changes alt-g to goto line (06-12-2002 sdj)
-(global-set-key "\M-g" 'goto-line)
-(global-set-key [backspace] 'backward-delete-char-untabify)
-;; Some Java Development Env. Stuff 
+;; Some Java Development Env. Stuff
 ;;(require 'jde)
 ;;(setq jde-web-browser "/usr/local/bin/netscape4 -remote")
 ;;(setq jde-doc-dir "/usr/share/doclib/java/")
@@ -299,18 +326,10 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
   (interactive "DDirectory: ")
   (shell-command
    (format "ctags -f %s -e -R %s" path-to-ctags (directory-file-name dir-name)))
-  )
+   )
 ;;pomodoro stuff
 ;;(require 'cl)
 ;;(require 'todochiku)
-
-;;Python Stuff
-					;(require 'virtualenvwrapper)
-					;(venv-initialize-interactive-shells) ;; if you want interactive shell support
-					;(venv-initialize-eshell) ;; if you want eshell support
-					;(setq venv-location "~/sandbox/lt/")
-					;(add-to-list 'load-path "~/sandbox/emacs_bits/python-django.el")
-					;(require 'python-django)
 
 ;;(when (load "flymake" t)
 ;;  (defun flymake-pyflakes-init ()
@@ -460,21 +479,21 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 (add-hook 'mu4e-compose-mode-hook 'epa-mail-mode)
 (add-hook 'mu4e-view-mode-hook 'epa-mail-mode)
 
-;; force flyspell incompose 
+;; force flyspell incompose
 (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
 
-;; 
+;;
 (setq mu4e-headers-skip-duplicates t)
 
 
 
 
 ;;;;;;;;;; bbdb with mu4e
-; 
+;
 ; http://bbdb.sourceforge.net/bbdb.html#SEC13
 ;
 ;(autoload 'bbdb-insinuate-mu4e "bbdb-mu4e")
-;(bbdb-initialize 'message 'mu4e)  
+;(bbdb-initialize 'message 'mu4e)
 ;; (require 'bbdb-loaddefs)
 ;; (setq bbdb-mail-user-agent (quote message-user-agent))
 ;; (setq mu4e-view-mode-hook (quote (bbdb-mua-auto-update visual-line-mode)))
@@ -492,16 +511,31 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 (setq org-mu4e-link-query-in-headers-mode nil)
 
 (setq org-capture-templates
-      '(("t" "todo" entry (file+headline "~/org/todo1.org" "Tasks")
-	 "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")))
+      '(
+	("t" "todo" entry (file+headline "~/Dropbox/org/todo1.org" "Tasks")
+	 "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
+	("P" "process-soon" entry (file+headline "~/Dropbox/org/todo1.org" "Todo")
+	 "* TODO %a %?\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))")
+	)
+)
 
 
 
 ;;;;;;; org
 
+;;; pomodoro stuff, take 2
+(require 'org-pomodoro)
 
+(setq org-timer-default-timer 1)
+(add-hook 'org-timer-done-hook' (lambda () (start-process "orgmode" nil "/ usr / bin / notify-send" "Orgmode: Pomodoro complete, rest")))
 
-;;;;;;;;;;;; odt output
+;;;; mobileorg
+(setq org-mobile-directory "~/Dropbox/org-mobile")
+
+;;TODO need to use this instead..
+(setq org-root-directory "~/Dropbox/org")
+
+;;; odt output
 (setq org-odt-preferred-output-format     "docx")
 
 (setq org-todo-keywords
@@ -514,24 +548,24 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 (global-set-key "\C-cb" 'org-iswitchb)
 
 ;;;;;;;;;;; babel
+;; TODO make sure langauges are installed and setup
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((python . t)
    (emacs-lisp . nil)
    (R .t)))
 
-(setq org-directory "~/org")
-(setq org-agenda-files '("~/org"))
+(setq org-directory "~/Dropbox/org")
+(setq org-agenda-files '("~/Dropbox/org"))
 
-;;;;;;; calendering
-
+;;;;;;; calenderinge
 (require 'calfw)
+(require 'calfw-org)
 
 ;;;;; org-caldav test.
 (require 'org-caldav)
 
-(setq org-caldav-url "http://sjunkin-vm:1080/sjunkin@juniper.net")
-(setq org-caldav-calendar-id "Calendar")
+(setq org-caldav-url "http://sjunkin-vm:1080/users/")
+(setq org-caldav-calendar-id "sjunkin@juniper.net/calendar")
 (setq org-caldav-uuid-extension ".EML")
-(setq org-caldav-inbox "~/org/calendar_jnpr.org")
-
+(setq org-caldav-inbox "~/Dropbox/org/calendar_jnpr.org")
