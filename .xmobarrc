@@ -1,4 +1,4 @@
-Config { font = "xft:Bitstream Vera Sans Mono:size=14:bold:antialias=true"
+Config { font = "xft:Bitstream Vera Sans Mono:size=8:bold:antialias=true"
         , borderColor = "black"
         , border = TopB
         , bgColor = "black"
@@ -6,7 +6,7 @@ Config { font = "xft:Bitstream Vera Sans Mono:size=14:bold:antialias=true"
         , position = TopW L 100
 	, lowerOnStart = True
         , commands = [ Run Weather "KSLC" ["-t","<tempF>f","-L","18","-H","25","--normal","green","--high","red","--low","lightblue"] 36000
-                        , Run Network "wlp2s0" ["-L","0","-H","32","--normal","green","--high","red"] 10			
+                        , Run Network "wlp3s0" ["-L","0","-H","32","--normal","green","--high","red"] 10
                         , Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
                         , Run Memory ["-t","Mem: <usedratio>%"] 10
                         , Run Swap [] 10
@@ -17,6 +17,6 @@ Config { font = "xft:Bitstream Vera Sans Mono:size=14:bold:antialias=true"
                         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "%StdinReader% | %cpu% | %memory% * %swap% | %wlp2s0% | {<fc=#ee9a00>%date%</fc> | %uname% | %KSLC% | %battery%"
+        , template = "%StdinReader% | %cpu% | %memory% * %swap% | %wlp3s0% | <fc=#ee9a00>%date%</fc> | %uname% | %KSLC% | %battery%"
 
 }
