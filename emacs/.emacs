@@ -25,7 +25,7 @@
 
 
 (set-face-attribute 'default nil
-		    :family "Inconsolata" :height 245 :weight 'normal)
+		    :family "Inconsolata" :height 115 :weight 'normal)
 
 ;;on os cocoa enable emacs starts in / (ugh)
 (setq default-directory "~/")
@@ -365,7 +365,7 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("2e5705ad7ee6cfd6ab5ce81e711c526ac22abed90b852ffaf0b316aa7864b11f" default)))
+    ("68d36308fc6e7395f7e6355f92c1dd9029c7a672cbecf8048e2933a053cf27e6" "2e5705ad7ee6cfd6ab5ce81e711c526ac22abed90b852ffaf0b316aa7864b11f" default)))
  '(send-mail-function (quote sendmail-send-it)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -420,7 +420,7 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 (setq mu4e-trash-folder  "/Trash")
 (setq mu4e-refile-folder "/archive")   ;; saved messages
 
-(setq mu4e-mu-binary "/usr/local/bin/mu")
+(setq mu4e-mu-binary "/usr/bin/mu")
 
 
 (setq mu4e-get-mail-command "offlineimap -q -a Juniper")
@@ -531,6 +531,8 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 
 ;;;; mobileorg
 (setq org-mobile-directory "~/Dropbox/org-mobile")
+(setq org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org")
+(setq org-mobile-files "~/Dropbox/org")
 
 ;;TODO need to use this instead..
 (setq org-root-directory "~/Dropbox/org")
@@ -549,11 +551,11 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 
 ;;;;;;;;;;; babel
 ;; TODO make sure langauges are installed and setup
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((python . t)
-   (emacs-lisp . nil)
-   (R .t)))
+;; (org-babel-do-load-languages
+;;  'org-babel-load-languages
+;;  '((python . t)
+;;    (emacs-lisp . nil)
+;;    (R .t)))
 
 (setq org-directory "~/Dropbox/org")
 (setq org-agenda-files '("~/Dropbox/org"))
