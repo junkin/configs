@@ -1,3 +1,4 @@
+
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
@@ -21,15 +22,16 @@ myLayout = tiled ||| Mirror tiled ||| Full
 
 myWorkspaces = ["1:main", "2:mail", "3:web", "4:code", "5", "6"]
 
- main = do
+main = do
     xmproc <- spawnPipe "xmobar"
 
     xmonad $ defaultConfig
-        {workspaces = myWorkspaces
-	,borderWidth = 2
-	,normalBorderColor = "#abc123"
-	,focusedBorderColor = "456def"
-	,layoutHook = avoidStruts  $  layoutHook defaultConfig
+        { workspaces = myWorkspaces
+	, terminal   = "urxvt"
+	, borderWidth = 2
+	, normalBorderColor = "#abc123"
+	, focusedBorderColor = "456def"
+	, layoutHook = avoidStruts  $  layoutHook defaultConfig
 	, manageHook=manageHook defaultConfig <+> manageDocks
 	, handleEventHook = mconcat
                   [ docksEventHook
@@ -42,6 +44,6 @@ myWorkspaces = ["1:main", "2:mail", "3:web", "4:code", "5", "6"]
         } `additionalKeys`
         [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock; xset dpms force off")
         , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
-        , ((0, xK_Super_L), return ())
+	, ((0, xK_Super_L), return ())
         , ((0, xK_Print), spawn "scrot")
         ]
