@@ -40,4 +40,4 @@ urxvt*scrollBar:        false
 urxvt*scrollBar_right:        true
 urxvt*scrollColor:        #000000
 urxvt*transparent:	  true
-urxvt*shading:	  30
+urxvt*shading:	  22
