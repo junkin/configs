@@ -25,7 +25,7 @@
 
 
 (set-face-attribute 'default nil
-		    :family "Inconsolata" :height 215 :weight 'normal)
+		    :family "Inconsolata" :height 155 :weight 'normal)
 
 ;;on os cocoa enable emacs starts in / (ugh)
 (setq default-directory "~/")
@@ -54,7 +54,7 @@
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode ess bbdb bbdb-csv-import bbdb-ext bbdb-vcard calfw org-pomodoro markdown-mode org2blog))
+(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode ess bbdb bbdb-csv-import bbdb-ext bbdb-vcard calfw org-pomodoro markdown-mode exec-path-from-shell))
 
 (defun uninstalled-packages (packages)
   (delq nil
@@ -84,7 +84,17 @@
        forecast-country "USA"
        forecast-units "us")
 
+;; If you don't have MELPA in your package archives:
+(require 'package)
+(add-to-list
+  'package-archives
+  '("melpa" . "http://melpa.org/packages/") t)
+(package-initialize)
+(package-refresh-contents)
 
+;; Install Intero
+(package-install 'intero)
+(add-hook 'haskell-mode-hook 'intero-mode)
 
 ;;location of external packages
 					;(add-to-list 'load-path "~/.emacs.d/")
@@ -92,6 +102,10 @@
 (add-to-list 'load-path "~/.emacs.d/side-lisp/jde")
 
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/")
+;; frome https://github.com/Homebrew/legacy-homebrew/issues/46976
+
+(let ((default-directory "/usr/local/share/emacs/site-lisp/"))
+  (normal-top-level-add-subdirs-to-load-path))
 
 
 ;;;;;;;;;;;;;;;;;;;;  Code bits.
@@ -126,6 +140,10 @@
 ;; TODO check for ibcl in path?
 (setq inferior-lisp-program "ibcl")
 
+;;;; R
+(setq inferior-R-program-name "/usr/local/bin/R")
+(setq exec-path (append exec-path '("/usr/local/bin")))
+(setq shell-command-switch "-ic")
 ;;;;; Gnuplot
 
 
@@ -197,8 +215,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "68d36308fc6e7395f7e6355f92c1dd9029c7a672cbecf8048e2933a053cf27e6" "2e5705ad7ee6cfd6ab5ce81e711c526ac22abed90b852ffaf0b316aa7864b11f" default)))
- '(send-mail-function (quote sendmail-send-it)))
+    ("2997ecd20f07b99259bddba648555335ffb7a7d908d8d3e6660ecbec415f6b95" "40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" default)))
+ '(package-selected-packages
+   (quote
+    (intero markdown-mode org-pomodoro calfw bbdb-vcard bbdb-ext bbdb-csv-import bbdb ess ido-vertical-mode org-caldav forecast flymake-python-pyflakes zenburn-theme magit jedi epc auto-complete projectile))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -252,7 +272,8 @@
 (setq mu4e-trash-folder  "/Trash")
 (setq mu4e-refile-folder "/archive")   ;; saved messages
 
-(setq mu4e-mu-binary "/usr/bin/mu")
+;; this is different on different systems (IE linux vs osX)
+(setq mu4e-mu-binary "/usr/local/bin/mu")
 
 
 ;(setq mu4e-get-mail-command "offlineimap -q -a Juniper")
@@ -398,10 +419,15 @@
 
 ;;;;;;;;;;; babel
 ;; TODO make sure langauges are installed and setup
- (org-babel-do-load-languages
-  'org-babel-load-languages
-  '((python . t)
-    (emacs-lisp . nil)))
+(require 'ob-R)
+(require 'ob-python)
+(require 'ob-emacs-lisp)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (emacs-lisp . nil)
+   (R .t)))
 
 
 (setq org-directory "~/Dropbox/org")
@@ -422,7 +448,7 @@
 ;;; transparency test.
 (defun transparency (value)
   "Sets transparency of the frame window"
-  (interactive "nTransparency Vakue 0 - 100 opaque:")
+  (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
 
 
