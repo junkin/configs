@@ -54,7 +54,7 @@
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defvar local-packages '(projectile auto-complete epc jedi jedidirex magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode ess bbdb bbdb-csv-import bbdb-ext bbdb-vcard calfw org-pomodoro markdown-mode))
+(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode ess bbdb bbdb-csv-import bbdb-ext bbdb-vcard calfw org-pomodoro markdown-mode org2blog))
 
 (defun uninstalled-packages (packages)
   (delq nil
@@ -427,3 +427,10 @@
 
 
 (set-frame-parameter (selected-frame) 'alpha '(85 50))
+
+
+
+;;;; org2blog
+
+(setq load-path (cons "~/.emacs.d/org2blog" load-path))
+(require 'org2blog-autoloads)
