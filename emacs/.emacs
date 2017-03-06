@@ -448,7 +448,7 @@
 ;;; transparency test.
 (defun transparency (value)
   "Sets transparency of the frame window"
-  (interactive "nTransparency Vakue 0 - 100 opaque:")
+  (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
 
 
