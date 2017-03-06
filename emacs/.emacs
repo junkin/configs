@@ -54,7 +54,7 @@
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode ess bbdb bbdb-csv-import bbdb-ext bbdb-vcard calfw org-pomodoro markdown-mode exec-path-from-shell))
+(defvar local-packages '(projectile auto-complete epc jedi magit zenburn-theme flymake-python-pyflakes forecast org-caldav ido-vertical-mode ess bbdb bbdb-csv-import bbdb-ext bbdb-vcard calfw org-pomodoro markdown-mode exec-path-from-shell org2blog))
 
 (defun uninstalled-packages (packages)
   (delq nil
